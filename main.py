@@ -7,7 +7,7 @@ app = FastAPI()
 DB_HOST = "ep-sparkling-resonance-acjth5op-pooler.sa-east-1.aws.neon.tech"
 DB_NAME = "neondb"
 DB_USER = "neondb_owner"
-DB_PASSWORD = "npg_Q5ZK9VIHxfvq"
+DB_PASSWORD = "kkksla12"
 DB_PORT = 5432
 
 
@@ -26,11 +26,16 @@ class AlunoCreate(BaseModel):
     nome: str
     nota: float
 
+class UsuarioCreate(BaseModel):
+    nome: str
+    email: str
+    senha: str
+
+
 
 @app.get("/")
 def home():
     return {"mensagem": "API funcionando"}
-
 
 @app.get("/alunos")
 def listar_alunos():
@@ -45,6 +50,29 @@ def listar_alunos():
     except Exception as e:
         return {"erro": str(e)}
 
+@app.post("/usuarios")
+def cadastrar_usuario(usuario: UsuarioCreate):
+    try:
+        conexao = conectar()
+        cursor = conexao.cursor()
+
+        cursor.execute("SELECT id FROM usuarios WHERE email = %s", (usuario.email,))
+        existe = cursor.fetchone()
+
+        if existe:
+            conexao.close()
+            return {"erro": "Usuário já cadastrado."}
+
+        cursor.execute(
+            "INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)",
+            (usuario.nome, usuario.email, usuario.senha)
+        )
+        conexao.commit()
+        conexao.close()
+
+        return {"mensagem": "Usuário cadastrado com sucesso."}
+    except Exception as e:
+        return {"erro": str(e)}
 
 @app.get("/alunos/buscar")
 def buscar_alunos(nome: str):
@@ -61,7 +89,6 @@ def buscar_alunos(nome: str):
         return [{"id": a[0], "nome": a[1], "nota": float(a[2])} for a in alunos]
     except Exception as e:
         return {"erro": str(e)}
-
 
 @app.post("/alunos")
 def cadastrar_aluno(aluno: AlunoCreate):
@@ -84,5 +111,34 @@ def cadastrar_aluno(aluno: AlunoCreate):
         conexao.close()
 
         return {"mensagem": "Aluno cadastrado com sucesso."}
+    except Exception as e:
+        return {"erro": str(e)}
+
+
+    nome: str
+    email: str
+    senha: str
+
+@app.post("/usuarios")
+def cadastrar_usuario(usuario: UsuarioCreate):
+    try:
+        conexao = conectar()
+        cursor = conexao.cursor()
+
+        cursor.execute("SELECT id FROM usuarios WHERE email = %s", (usuario.email,))
+        existe = cursor.fetchone()
+
+        if existe:
+            conexao.close()
+            return {"erro": "Usuário já cadastrado."}
+
+        cursor.execute(
+            "INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)",
+            (usuario.nome, usuario.email, usuario.senha)
+        )
+        conexao.commit()
+        conexao.close()
+
+        return {"mensagem": "Usuário cadastrado com sucesso."}
     except Exception as e:
         return {"erro": str(e)}
