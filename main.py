@@ -21,10 +21,12 @@ def conectar():
         sslmode="require"
     )
 
+
 class UsuarioCreate(BaseModel):
     nome: str
     email: str
     senha: str
+
 
 class AlunoCreate(BaseModel):
     nome: str
@@ -34,6 +36,7 @@ class AlunoCreate(BaseModel):
 @app.get("/")
 def home():
     return {"mensagem": "API funcionando"}
+
 
 @app.get("/alunos")
 def listar_alunos():
@@ -47,6 +50,7 @@ def listar_alunos():
         return [{"id": a[0], "nome": a[1], "nota": float(a[2])} for a in alunos]
     except Exception as e:
         return {"erro": str(e)}
+
 
 @app.get("/alunos/buscar")
 def buscar_alunos(nome: str):
@@ -64,29 +68,9 @@ def buscar_alunos(nome: str):
     except Exception as e:
         return {"erro": str(e)}
 
-@app.post("/usuarios")
-def cadastrar_usuario(usuario: UsuarioCreate):
-    try:
-        conexao = conectar()
-        cursor = conexao.cursor()
 
-        cursor.execute("SELECT id FROM usuarios WHERE email = %s", (usuario.email,))
-        existe = cursor.fetchone()
-
-        if existe:
-            conexao.close()
-            return {"erro": "Usuário já cadastrado."}
-
-        cursor.execute(
-            "INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)",
-            (usuario.nome, usuario.email, usuario.senha)
-        )
-        conexao.commit()
-        conexao.close()
-
-        return {"mensagem": "Usuário cadastrado com sucesso."}
-    except Exception as e:
-        return {"erro": str(e)}
+@app.post("/alunos")
+def cadastrar_aluno(aluno: AlunoCreate):
     try:
         conexao = conectar()
         cursor = conexao.cursor()
@@ -109,6 +93,7 @@ def cadastrar_usuario(usuario: UsuarioCreate):
     except Exception as e:
         return {"erro": str(e)}
 
+
 @app.post("/usuarios")
 def cadastrar_usuario(usuario: UsuarioCreate):
     try:
@@ -131,4 +116,25 @@ def cadastrar_usuario(usuario: UsuarioCreate):
 
         return {"mensagem": "Usuário cadastrado com sucesso."}
     except Exception as e:
+        return {"erro": str(e)}
+    try:
+        conexao = conectar()
+        cursor = conexao.cursor()
+
+        cursor.execute("SELECT id FROM usuarios WHERE email = %s", (usuario.email,))
+        existe = cursor.fetchone()
+
+        if existe:
+            conexao.close()
+            return {"erro": "Usuário já cadastrado."}
+
+        cursor.execute(
+            "INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)",
+            (usuario.nome, usuario.email, usuario.senha)
+        )
+        conexao.commit()
+        conexao.close()
+
+        return {"mensagem": "Usuário cadastrado com sucesso."}
+     except Exception as e:
         return {"erro": str(e)}
