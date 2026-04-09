@@ -1,32 +1,24 @@
-import ttkbootstrap as ttk
+import customtkinter as ctk
 
-app = ttk.Window(themename="superhero")
+ctk.set_appearance_mode("dark")  # dark ou light
+ctk.set_default_color_theme("blue")  # tema base
+
+app = ctk.CTk()
 app.geometry("400x300")
 
-entry = ttk.Entry(
-    app,
-    width=30,
-    font=("Arial", 12),
-    justify="center",
-    bootstyle="info"
-)
-entry.pack(pady=10)
-
-senha = ttk.Entry(
-    app,
-    width=30,
-    show="*",
-    font=("Arial", 12),
-    bootstyle="warning"
-)
-senha.pack(pady=10)
-
-botao = ttk.Button(
+botao = ctk.CTkButton(
     app,
     text="Entrar",
-    padding=10,
-    bootstyle="success"
+    fg_color="#00aa55",       # cor do botão
+    hover_color="#8C3B57",    # cor ao passar o mouse
+    corner_radius=20          # arredondamento
 )
-botao.pack(pady=20)
+
+botao.pack(pady=50)
 
 app.mainloop()
+
+
+
+CTkButton = button
+ctk.Button(app,texto = "ola, mundo", comand=etc)

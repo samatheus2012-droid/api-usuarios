@@ -21,16 +21,14 @@ def conectar():
         sslmode="require"
     )
 
-
-class AlunoCreate(BaseModel):
-    nome: str
-    nota: float
-
 class UsuarioCreate(BaseModel):
     nome: str
     email: str
     senha: str
 
+class AlunoCreate(BaseModel):
+    nome: str
+    nota: float
 
 
 @app.get("/")
@@ -43,6 +41,22 @@ def listar_alunos():
         conexao = conectar()
         cursor = conexao.cursor()
         cursor.execute("SELECT id, nome, nota FROM alunos ORDER BY id")
+        alunos = cursor.fetchall()
+        conexao.close()
+
+        return [{"id": a[0], "nome": a[1], "nota": float(a[2])} for a in alunos]
+    except Exception as e:
+        return {"erro": str(e)}
+
+@app.get("/alunos/buscar")
+def buscar_alunos(nome: str):
+    try:
+        conexao = conectar()
+        cursor = conexao.cursor()
+        cursor.execute(
+            "SELECT id, nome, nota FROM alunos WHERE nome ILIKE %s ORDER BY id",
+            (f"%{nome}%",)
+        )
         alunos = cursor.fetchall()
         conexao.close()
 
@@ -73,25 +87,6 @@ def cadastrar_usuario(usuario: UsuarioCreate):
         return {"mensagem": "Usuário cadastrado com sucesso."}
     except Exception as e:
         return {"erro": str(e)}
-
-@app.get("/alunos/buscar")
-def buscar_alunos(nome: str):
-    try:
-        conexao = conectar()
-        cursor = conexao.cursor()
-        cursor.execute(
-            "SELECT id, nome, nota FROM alunos WHERE nome ILIKE %s ORDER BY id",
-            (f"%{nome}%",)
-        )
-        alunos = cursor.fetchall()
-        conexao.close()
-
-        return [{"id": a[0], "nome": a[1], "nota": float(a[2])} for a in alunos]
-    except Exception as e:
-        return {"erro": str(e)}
-
-@app.post("/alunos")
-def cadastrar_aluno(aluno: AlunoCreate):
     try:
         conexao = conectar()
         cursor = conexao.cursor()
@@ -113,11 +108,6 @@ def cadastrar_aluno(aluno: AlunoCreate):
         return {"mensagem": "Aluno cadastrado com sucesso."}
     except Exception as e:
         return {"erro": str(e)}
-
-
-    nome: str
-    email: str
-    senha: str
 
 @app.post("/usuarios")
 def cadastrar_usuario(usuario: UsuarioCreate):
