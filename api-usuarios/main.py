@@ -5,12 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-DB_HOST = "ep-dark-paper-acegdo2q-pooler.sa-east-1.aws.neon.tech"
-DB_NAME = "neondb"
-DB_USER = "neondb_owner"
-DB_PASSWORD = "npg_HYPB1jJa0Xpw"
-DB_PORT = 5432
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,6 +12,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+DB_HOST = "ep-dark-paper-acegdo2q-pooler.sa-east-1.aws.neon.tech"
+DB_NAME = "neondb"
+DB_USER = "neondb_owner"
+DB_PASSWORD = "npg_HYPB1jJa0Xpw"
+DB_PORT = 5432
+
+
 
 def conectar():
     return psycopg2.connect(
