@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import psycopg2
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -10,6 +11,13 @@ DB_USER = "neondb_owner"
 DB_PASSWORD = "npg_HYPB1jJa0Xpw"
 DB_PORT = 5432
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=false,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def conectar():
     return psycopg2.connect(
@@ -21,12 +29,10 @@ def conectar():
         sslmode="require"
     )
 
-
 class UsuarioCreate(BaseModel):
     nome: str
     email: str
     senha: str
-
 
 class LoginCreate(BaseModel):
     nome: str
@@ -42,21 +48,17 @@ class AlunoCreate(BaseModel):
 def home():
     return {"mensagem": "API funcionando"}
 
-
 @app.get("/home")
 def get_home():
     return {"mensagem": "Bem-vindo à API da escola"}
-
 
 @app.get("/home/alunos")
 def get_home_alunos():
     return {"mensagem": "Área de alunos"}
 
-
 @app.get("/home/alunos/doc")
 def get_home_alunos_doc():
     return {"mensagem": "Documentação dos alunos"}
-
 
 @app.post("/usuarios")
 def cadastrar_usuario(usuario: UsuarioCreate):
@@ -89,7 +91,6 @@ def cadastrar_usuario(usuario: UsuarioCreate):
             cursor.close()
         if conexao:
             conexao.close()
-
 
 @app.post("/login")
 def login(usuario: LoginCreate):
@@ -160,7 +161,6 @@ def cadastrar_aluno(aluno: AlunoCreate):
         if conexao:
             conexao.close()
 
-
 @app.get("/alunos/buscar")
 def buscar_aluno(nome: str):
     conexao = None
@@ -189,8 +189,19 @@ def buscar_aluno(nome: str):
         return {"erro": str(e)}
 
     finally:
+
+
         if cursor:
             cursor.close()
 
         if conexao:
             conexao.close()
+
+
+
+
+
+
+
+
+# suas rotas abaixo
