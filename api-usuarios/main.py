@@ -43,7 +43,7 @@ class AlunoCreate(BaseModel):
     nome: str
     nota: float
 
-
+#TESTE CORS
 @app.get("/")
 def home():
     return {"mensagem": "API funcionando"}
