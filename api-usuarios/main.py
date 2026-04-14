@@ -3,9 +3,7 @@ from pydantic import BaseModel
 import psycopg2
 from fastapi.middleware.cors import CORSMiddleware
 
-
-
-
+app = FastAPI()
 
 origins = [
     "http://localhost:5173",
@@ -19,6 +17,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
 DB_HOST = "ep-dark-paper-acegdo2q-pooler.sa-east-1.aws.neon.tech"
 DB_NAME = "neondb"
 DB_USER = "neondb_owner"
