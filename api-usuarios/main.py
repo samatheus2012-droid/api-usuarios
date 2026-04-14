@@ -5,9 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-app.add_middleware(CORSMiddleware,
-
-    allow_origins=["http://localhost:5173"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,7 +20,6 @@ DB_PASSWORD = "npg_HYPB1jJa0Xpw"
 DB_PORT = 5432
 
 
-
 def conectar():
     return psycopg2.connect(
         host=DB_HOST,
@@ -31,36 +30,43 @@ def conectar():
         sslmode="require"
     )
 
+
 class UsuarioCreate(BaseModel):
     nome: str
     email: str
     senha: str
+
 
 class LoginCreate(BaseModel):
     nome: str
     email: str
     senha: str
 
+
 class AlunoCreate(BaseModel):
     nome: str
     nota: float
 
-#TESTE CORS
+
 @app.get("/")
 def home():
     return {"mensagem": "API funcionando"}
+
 
 @app.get("/home")
 def get_home():
     return {"mensagem": "Bem-vindo à API da escola"}
 
+
 @app.get("/home/alunos")
 def get_home_alunos():
     return {"mensagem": "Área de alunos"}
 
+
 @app.get("/home/alunos/doc")
 def get_home_alunos_doc():
     return {"mensagem": "Documentação dos alunos"}
+
 
 @app.post("/usuarios")
 def cadastrar_usuario(usuario: UsuarioCreate):
@@ -93,6 +99,7 @@ def cadastrar_usuario(usuario: UsuarioCreate):
             cursor.close()
         if conexao:
             conexao.close()
+
 
 @app.post("/login")
 def login(usuario: LoginCreate):
@@ -130,6 +137,7 @@ def login(usuario: LoginCreate):
         if conexao:
             conexao.close()
 
+
 @app.post("/alunos")
 def cadastrar_aluno(aluno: AlunoCreate):
     conexao = None
@@ -159,9 +167,9 @@ def cadastrar_aluno(aluno: AlunoCreate):
     finally:
         if cursor:
             cursor.close()
-
         if conexao:
             conexao.close()
+
 
 @app.get("/alunos/buscar")
 def buscar_aluno(nome: str):
@@ -191,19 +199,7 @@ def buscar_aluno(nome: str):
         return {"erro": str(e)}
 
     finally:
-
-
         if cursor:
             cursor.close()
-
         if conexao:
             conexao.close()
-
-
-
-
-
-
-
-
-# suas rotas abaixo
