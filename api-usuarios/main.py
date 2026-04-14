@@ -48,7 +48,7 @@ class AlunoCreate(BaseModel):
     nota: float
 
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 def home():
     return {"mensagem": "API funcionando"}
 
